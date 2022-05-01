@@ -8,12 +8,14 @@ class ModelBase
     private $where;
     private $orderBy;
     private $limit;
+    private $model;
     private $debug = false;
 
     public function __construct($attr = null)
     {
         $this->connection = new Conexao('tabler');
         $this->connection->setConexao();
+        $this->model = get_called_class();
 
         if ($attr)
             $this->fill($attr);
@@ -35,12 +37,16 @@ class ModelBase
         $results = $this->connection->getArrayResults();
 
         foreach ($results as $row)
-            $resultArray[] = new self($row);
+            $resultArray[] = new $this->model($row);
 
         return $resultArray;
     }
 
 
+    public function get()
+    {
+        return $this->run($this->selectQuery(), true);
+    }
 
     public function actives()
     {
@@ -72,7 +78,7 @@ class ModelBase
     protected function insertQuery($attrs)
     {
         $keys = implode(', ', array_flip($attrs));
-        $values = '"' . implode(', "', $attrs) . '"';
+        $values = '"' . implode('", "', $attrs) . '"';
 
         return 'INSERT INTO ' . $this->table . '(' . $keys . ') VALUES (' . $values . ');';
     }
@@ -82,13 +88,13 @@ class ModelBase
         if (!count($this->where))
             throw new \Exception('Não é possível fazer um UPDATE sem WHERE');
 
-        $sets = '';
+        $sets = [];
         foreach ($attrs as $key => $val)
-            $sets .= $key . ' = "' . $val . '"';
+            $sets[] = $key . ' = "' . $val . '"';
 
         return 'UPDATE ' . $this->table . ' SET ' .
-            $sets .
-            ', updated_at = "' . date('YYYY-MM-DD HH:mm:ss') . '"' .
+            implode(', ', $sets) .
+            ', updated_at = "' . date('Y-m-d H:m:s') . '"' .
             $this->getWhere();
     }
 
@@ -107,7 +113,7 @@ class ModelBase
         $this->where('id', '=', $id ?: $this->id); // Adiciona o ID à instancia WHERE para ter certeza que será removido corretamente
 
         return $this->updateQuery([
-            'deleted_at' => date('YYYY-MM-DD HH:mm:ss')
+            'deleted_at' => date('Y-m-d H:m:s')
         ]);
     }
 

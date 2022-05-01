@@ -5,14 +5,14 @@ class Products extends ModelBase
 {
     protected $table = 'products';
 
-    protected $id;
-    protected $description;
-    protected $available;
-    protected $barcode;
-    protected $value;
-    protected $deleted_at;
-    protected $created_at;
-    protected $updated_at;
+    public $id;
+    public $description;
+    public $available;
+    public $barcode;
+    public $value;
+    public $deleted_at;
+    public $created_at;
+    public $updated_at;
 
 
     public function insert()
@@ -29,7 +29,7 @@ class Products extends ModelBase
 
     public function update()
     {
-        $query = $this->updateQuery([
+        $query = $this->where('id', '=', $this->id)->updateQuery([
             'description' => $this->description,
             'available' => $this->available,
             'barcode' => $this->barcode,
