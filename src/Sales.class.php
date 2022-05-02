@@ -6,6 +6,7 @@ class Sales extends ModelBase
     protected $table = 'sales';
 
     public $id;
+    private $product;
     public $product_id;
     public $amount;
     public $unit_value;

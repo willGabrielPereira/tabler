@@ -154,11 +154,13 @@ class ModelBase
             $descAsc = 'asc';
 
         $this->orderBy[] = $attribute . ' ' . $descAsc;
+        return $this;
     }
 
     public function limit($limit)
     {
         $this->limit = $limit;
+        return $this;
     }
 
 

@@ -87,7 +87,7 @@ require_once __DIR__ . '/src/bootstrap.php';
                   <a href="./produtos.php" class="nav-link active"><i class="fe fe-package"></i> Produtos</a>
                 </li>
                 <li class="nav-item">
-                  <a href="./form-venda.html" class="nav-link"><i class="fe fe-dollar-sign"></i> Venda</a>
+                  <a href="./form-venda.php" class="nav-link"><i class="fe fe-dollar-sign"></i> Venda</a>
                 </li>
                 <li class="nav-item">
                   <a href="./produtos-excluidos.html" class="nav-link"><i class="fe fe-trash"></i> Lixeira</a>
@@ -124,7 +124,9 @@ require_once __DIR__ . '/src/bootstrap.php';
                     </thead>
                     <tbody>
                       <?php
-                      foreach (getAll(Products::class) as $product) { ?>
+                      foreach (getAll(Products::class) as $product) {
+                        $sales = (new Sales)->where('product_id', '=', $product->id)->orderBy('created_at', 'desc')->get();
+                      ?>
                         <tr>
                           <td><span class="text-muted"><?php echo $product->id; ?></span></td>
                           <td><?php echo $product->description; ?></td>
@@ -135,10 +137,23 @@ require_once __DIR__ . '/src/bootstrap.php';
                             <?php echo $product->available; ?>
                           </td>
                           <td>
-                            08/09/2019
+                            <?php
+                            if (!count($sales)) {
+                              echo 'Nunca vendido!';
+                            } else {
+                              echo dateformat($sales[0]->created_at);
+                            }
+                            ?>
                           </td>
                           <td>
-                            R$ 30,00
+                            <?php
+                            echo 'R$: ';
+                            $total = 0;
+                            foreach ($sales as $sale) {
+                              $total += $sale->unit_value * $sale->amount;
+                            }
+                            echo priceformat($total);
+                            ?>
                           </td>
                           <td>
                             <a class="icon" href="./form-produto-edit.html">

@@ -88,7 +88,7 @@ require_once __DIR__ . '/src/bootstrap.php';
                   <a href="./produtos.php" class="nav-link"><i class="fe fe-package"></i> Produtos</a>
                 </li>
                 <li class="nav-item">
-                  <a href="./form-venda.html" class="nav-link"><i class="fe fe-dollar-sign"></i> Venda</a>
+                  <a href="./form-venda.php" class="nav-link"><i class="fe fe-dollar-sign"></i> Venda</a>
                 </li>
                 <li class="nav-item">
                   <a href="./produtos-excluidos.html" class="nav-link"><i class="fe fe-trash"></i> Lixeira</a>
