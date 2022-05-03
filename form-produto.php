@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/src/bootstrap.php';
 
-if (isset($_GET['recover'])) {
-    $recover = recover(Products::class, $_GET['recover']);
-    header('Location: /produtos-excluidos.php');
+if (isset($_POST['submit'])) {
+    $save = save(Products::class, $_POST);
+    unset($_POST);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -24,7 +25,7 @@ if (isset($_GET['recover'])) {
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
     <!-- Generated: 2018-04-16 09:29:05 +0200 -->
-    <title>Produtos</title>
+    <title>Novo produto</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext" />
     <script src="./assets/js/require.min.js"></script>
@@ -91,7 +92,7 @@ if (isset($_GET['recover'])) {
                                     <a href="./index.php" class="nav-link"><i class="fe fe-home"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./produtos.php" class="nav-link"><i class="fe fe-package"></i>
+                                    <a href="./produtos.php" class="nav-link active"><i class="fe fe-package"></i>
                                         Produtos</a>
                                 </li>
                                 <li class="nav-item">
@@ -99,7 +100,7 @@ if (isset($_GET['recover'])) {
                                         Venda</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./produtos-excluidos.php" class="nav-link active"><i class="fe fe-trash"></i>
+                                    <a href="./produtos-excluidos.php" class="nav-link"><i class="fe fe-trash"></i>
                                         Lixeira</a>
                                 </li>
                             </ul>
@@ -109,49 +110,57 @@ if (isset($_GET['recover'])) {
             </div>
             <div class="my-3 my-md-5">
                 <div class="container">
-                    <div class="row row-cards row-deck">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        Produtos excluídos
-                                    </h3>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form class="card" method="post">
+                                <div class="card-body">
+                                    <h3 class="card-title">Novo produto</h3>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Descrição</label>
+                                                <input type="text" class="form-control" name="description" placeholder="Arroz.." />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Estoque</label>
+                                                <input type="number" name="available" class="form-control" placeholder="10.." />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Código de barras</label>
+                                                <input type="number" name="barcode" class="form-control" placeholder="78978978978978" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Valor unitário</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-prepend">
+                                                        <span class="input-group-text">R$</span>
+                                                    </span>
+                                                    <input type="text" name="value" class="form-control text-right" aria-label="Valor" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table card-table table-vcenter text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th class="w-1">#</th>
-                                                <th>Descrição</th>
-                                                <th>Valor unitário</th>
-                                                <th>Estoque</th>
-                                                <th class="w-1"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            foreach (getDeleted(Products::class) as $product) {
-                                            ?>
-                                                <tr>
-                                                    <td>
-                                                        <span class="text-muted"><?php echo $product->id; ?></span>
-                                                    </td>
-                                                    <td><?php echo $product->description; ?></td>
-                                                    <td>R$ <?php echo priceformat($product->value); ?></td>
-                                                    <td><?php echo $product->available; ?></td>
-                                                    <td>
-                                                        <a class="icon" href="?recover=<?php echo $product->id; ?>">
-                                                            <i class="fe fe-refresh-ccw"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            <?php
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
+                                <div class="card-footer text-left" style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                        ">
+                                    <div>
+                                        <a href="./produtos.php" class="btn btn-secondary">Voltar para produtos</a>
+                                    </div>
+                                    <div>
+                                        <button type="submit" name="submit" value="submit" class="btn btn-primary">
+                                            Confirmar
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

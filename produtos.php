@@ -1,5 +1,11 @@
 <?php
 require_once __DIR__ . '/src/bootstrap.php';
+
+if (isset($_GET['delete'])) {
+  delete(Products::class, $_GET['delete']);
+  header('Location: /produtos.php');
+}
+
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
@@ -105,7 +111,7 @@ require_once __DIR__ . '/src/bootstrap.php';
                 <div class="card-header">
                   <h3 class="card-title">Produtos</h3>
                   <div class="card-options">
-                    <a href="./form-produto.html" class="btn btn-azure">Adicionar</a>
+                    <a href="./form-produto.php" class="btn btn-azure">Adicionar</a>
                   </div>
                 </div>
                 <div class="table-responsive">
@@ -146,8 +152,8 @@ require_once __DIR__ . '/src/bootstrap.php';
                             ?>
                           </td>
                           <td>
+                            R$
                             <?php
-                            echo 'R$: ';
                             $total = 0;
                             foreach ($sales as $sale) {
                               $total += $sale->unit_value * $sale->amount;
@@ -161,7 +167,7 @@ require_once __DIR__ . '/src/bootstrap.php';
                             </a>
                           </td>
                           <td>
-                            <a class="icon" href="javascript:void(0)">
+                            <a class="icon" href="?delete=<?php echo $product->id; ?>">
                               <i class="fe fe-trash"></i>
                             </a>
                           </td>

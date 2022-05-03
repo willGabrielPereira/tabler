@@ -16,7 +16,7 @@ class Sales extends ModelBase
 
     public function product()
     {
-        if (!$this->id) // Se ainda a venda ainda não foi capturada, não é possível capturar o produto relacionado
+        if (!$this->product_id)
             return false;
 
         if ($this->product && $this->product->id == $this->product_id)
@@ -28,6 +28,11 @@ class Sales extends ModelBase
 
     public function insert()
     {
+        if (isset($this->update_amount) && $this->update_amount == 'true') {
+            $this->product()->value = $this->unit_value;
+            $this->product()->update();
+        }
+
         $query = $this->insertQuery([
             'product_id' => $this->product_id,
             'amount' => $this->amount,

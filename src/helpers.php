@@ -40,9 +40,18 @@ function getDeleted($class)
 function save($class, $attributes)
 {
     $model = new $class($attributes);
-    dd($model);
     if ($model->id)
         return $model->update();
 
     return $model->insert();
+}
+
+function delete($class, $id)
+{
+    return (new $class)->delete($id);
+}
+
+function recover($class, $id)
+{
+    return (new $class)->recover($id);
 }

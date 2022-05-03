@@ -2,9 +2,11 @@
 require_once __DIR__ . '/src/bootstrap.php';
 
 if (isset($_POST['submit'])) {
-    save(Products::class, $_POST);
-    dd($_POST);
+    $save = save(Sales::class, $_POST);
+    unset($_POST);
 }
+
+$products = getAll(Products::class);
 
 ?>
 <!DOCTYPE html>
@@ -33,6 +35,33 @@ if (isset($_POST['submit'])) {
         requirejs.config({
             baseUrl: '.',
         });
+
+        productValues = {
+            <?php
+            foreach ($products as $product) {
+                echo $product->id . ': ' . $product->value . ',';
+            }
+            ?>
+        }
+
+        function changeProduct() {
+            let product = document.querySelector('.card [name=product_id]').value
+            let value = document.querySelector('.card [name=unit_value]')
+
+            value.value = productValues[product]
+            calculateTotal()
+        }
+
+        function calculateTotal() {
+            let amount = document.querySelector('.card [name=amount]').value
+            let value = document.querySelector('.card [name=unit_value]').value
+
+            let total = document.querySelector('.card #total_amount').value = amount * value
+        }
+
+        window.onload = () => {
+            changeProduct()
+        }
     </script>
     <!-- Dashboard Core -->
     <link href="./assets/css/dashboard.css" rel="stylesheet" />
@@ -96,7 +125,7 @@ if (isset($_POST['submit'])) {
                                         Produtos</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./form-produto.html" class="nav-link active"><i class="fe fe-dollar-sign"></i>
+                                    <a href="./form-venda.php" class="nav-link active"><i class="fe fe-dollar-sign"></i>
                                         Venda</a>
                                 </li>
                                 <li class="nav-item">
@@ -121,9 +150,9 @@ if (isset($_POST['submit'])) {
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="form-label">Produto</label>
-                                                <select class="form-control custom-select" name="product_id">
+                                                <select class="form-control custom-select" name="product_id" oninput="changeProduct();">
                                                     <?php
-                                                    foreach (getAll(Products::class) as $product) {
+                                                    foreach ($products as $product) {
                                                     ?>
                                                         <option value="<?php echo $product->id; ?>">
                                                             <?php echo $product->description; ?>
@@ -137,7 +166,7 @@ if (isset($_POST['submit'])) {
                                         <div class="col-sm-6 col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Quantidade</label>
-                                                <input type="number" name="amount" class="form-control" placeholder="Digite aqui a quantidade" />
+                                                <input type="number" name="amount" oninput="calculateTotal();" class="form-control" placeholder="Digite aqui a quantidade" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-4">
@@ -147,7 +176,7 @@ if (isset($_POST['submit'])) {
                                                     <span class="input-group-prepend">
                                                         <span class="input-group-text">R$</span>
                                                     </span>
-                                                    <input type="text" name="unit_value" class="form-control text-right" aria-label="Valor" />
+                                                    <input type="text" name="unit_value" oninput="calculateTotal();" class="form-control text-right" aria-label="Valor" />
                                                 </div>
                                             </div>
                                         </div>
@@ -158,7 +187,7 @@ if (isset($_POST['submit'])) {
                                                     <span class="input-group-prepend">
                                                         <span class="input-group-text">R$</span>
                                                     </span>
-                                                    <input type="text" class="form-control text-right" aria-label="Valor" disabled="disabled" title="Este campo não pode ser alterado" />
+                                                    <input type="text" class="form-control text-right" id="total_amount" aria-label="Valor" disabled="disabled" title="Este campo não pode ser alterado" />
                                                 </div>
                                             </div>
                                         </div>
