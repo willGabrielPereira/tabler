@@ -9,7 +9,7 @@ function dd(...$parms)
 
 function dateformat($date)
 {
-    return date('d-m-Y', strtotime($date));
+    return date('d/m/Y', strtotime($date));
 }
 
 function priceformat($value)
@@ -29,4 +29,20 @@ function getAll($class)
 {
     $prod = (new $class)->actives();
     return $prod;
+}
+
+function getDeleted($class)
+{
+    $prod = (new $class)->deleteds();
+    return $prod;
+}
+
+function save($class, $attributes)
+{
+    $model = new $class($attributes);
+    dd($model);
+    if ($model->id)
+        return $model->update();
+
+    return $model->insert();
 }

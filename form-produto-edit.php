@@ -1,11 +1,8 @@
 <?php
 require_once __DIR__ . '/src/bootstrap.php';
 
-if (isset($_POST['submit'])) {
-    save(Products::class, $_POST);
-    dd($_POST);
-}
-
+$product = (new Products())->where('id', '=', $_GET['id'])->limit(1)->get()[0];
+// dd($product);
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -25,7 +22,7 @@ if (isset($_POST['submit'])) {
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
     <!-- Generated: 2018-04-16 09:29:05 +0200 -->
-    <title>Venda</title>
+    <title>Novo produto</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext" />
     <script src="./assets/js/require.min.js"></script>
@@ -92,11 +89,11 @@ if (isset($_POST['submit'])) {
                                     <a href="./index.php" class="nav-link"><i class="fe fe-home"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./produtos.php" class="nav-link"><i class="fe fe-package"></i>
+                                    <a href="./produtos.php" class="nav-link active"><i class="fe fe-package"></i>
                                         Produtos</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./form-produto.html" class="nav-link active"><i class="fe fe-dollar-sign"></i>
+                                    <a href="./form-venda.php" class="nav-link"><i class="fe fe-dollar-sign"></i>
                                         Venda</a>
                                 </li>
                                 <li class="nav-item">
@@ -112,32 +109,29 @@ if (isset($_POST['submit'])) {
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form method="post" class="card">
+                            <form class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">
-                                        Realizar venda de um produto
+                                        Editar produto - Batata
                                     </h3>
                                     <div class="row">
+                                        <input type="hidden" name="id" class="form-control" value="<?php echo $product->id; ?>">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="form-label">Produto</label>
-                                                <select class="form-control custom-select" name="product_id">
-                                                    <?php
-                                                    foreach (getAll(Products::class) as $product) {
-                                                    ?>
-                                                        <option value="<?php echo $product->id; ?>">
-                                                            <?php echo $product->description; ?>
-                                                        </option>
-                                                    <?php
-                                                    }
-                                                    ?>
-                                                </select>
+                                                <label class="form-label">Descrição</label>
+                                                <input type="text" class="form-control" name="example-text-input" placeholder="Arroz.." value="<?php echo $product->description; ?>" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-4">
                                             <div class="form-group">
-                                                <label class="form-label">Quantidade</label>
-                                                <input type="number" name="amount" class="form-control" placeholder="Digite aqui a quantidade" />
+                                                <label class="form-label">Estoque</label>
+                                                <input type="number" class="form-control" placeholder="10.." value="<?php echo $product->available; ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Código de barras</label>
+                                                <input type="number" class="form-control" placeholder="78978978978978" value="<?php echo $product->barcode; ?>" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-4">
@@ -147,33 +141,7 @@ if (isset($_POST['submit'])) {
                                                     <span class="input-group-prepend">
                                                         <span class="input-group-text">R$</span>
                                                     </span>
-                                                    <input type="text" name="unit_value" class="form-control text-right" aria-label="Valor" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Valor total</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-prepend">
-                                                        <span class="input-group-text">R$</span>
-                                                    </span>
-                                                    <input type="text" class="form-control text-right" aria-label="Valor" disabled="disabled" title="Este campo não pode ser alterado" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-12">
-                                            <div class="form-group">
-                                                <div class="form-label">
-                                                    &nbsp;
-                                                </div>
-                                                <div class="custom-controls-stacked">
-                                                    <label class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" name="update_amount" value="true" checked />
-                                                        <span class="custom-control-label">Atualizar valor
-                                                            unitário do
-                                                            produto</span>
-                                                    </label>
+                                                    <input type="text" class="form-control text-right" aria-label="Valor" value="<?php echo $product->value; ?>" />
                                                 </div>
                                             </div>
                                         </div>
@@ -187,59 +155,12 @@ if (isset($_POST['submit'])) {
                                         <a href="./produtos.php" class="btn btn-secondary">Voltar para produtos</a>
                                     </div>
                                     <div>
-                                        <button type="submit" name="submit" value="submit" class="btn btn-primary">
-                                            Confirmar
+                                        <button type="submit" class="btn btn-primary">
+                                            Confirmar alteração
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="my-3 my-md-5">
-                <div class="container">
-                    <div class="row row-cards row-deck">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        Últimas vendas realizadas
-                                    </h3>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table card-table table-vcenter text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th class="w-1">#</th>
-                                                <th>Produto</th>
-                                                <th>Quantidade</th>
-                                                <th>Valor unitário</th>
-                                                <th>
-                                                    Valor total da venda
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            foreach (getAll(Sales::class) as $sale) {
-                                            ?>
-                                                <tr>
-                                                    <td>
-                                                        <span class="text-muted">2</span>
-                                                    </td>
-                                                    <td><?php echo $sale->product()->description; ?></td>
-                                                    <td><?php echo $sale->amount; ?></td>
-                                                    <td>R$ <?php echo priceformat($sale->unit_value); ?></td>
-                                                    <td>R$ <?php echo priceformat($sale->unit_value * $sale->amount); ?></td>
-                                                </tr>
-                                            <?php
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
